@@ -1314,6 +1314,32 @@ image load_image_stb(char *filename, int channels)
     return im;
 }
 
+image load_image_stb_from_buff(unsigned char *buffer, int len, int channels)
+{
+
+    int w, h, c;
+    unsigned char *data = stbi_load_from_memory(buffer, len,  &w, &h, &c, channels);
+    if (!data) {
+        fprintf(stderr, "Cannot load image \nSTB Reason: %s\n", stbi_failure_reason());
+        image im_empty = make_image(1, 1, 1);
+        return im_empty;
+    }
+    if(channels) c = channels;
+    int i,j,k;
+    image im = make_image(w, h, c);
+    for(k = 0; k < c; ++k){
+        for(j = 0; j < h; ++j){
+            for(i = 0; i < w; ++i){
+                int dst_index = i + w*j + w*h*k;
+                int src_index = k + c*i + c*w*j;
+                im.data[dst_index] = (float)data[src_index]/255.;
+            }
+        }
+    }
+    free(data);
+    return im;
+}
+
 image load_image(char *filename, int w, int h, int c)
 {
 #ifdef OPENCV
@@ -1328,6 +1354,23 @@ image load_image(char *filename, int w, int h, int c)
         out = resized;
     }
     return out;
+}
+
+image load_image_from_buff(unsigned char *buffer, int len, int w, int h, int c)
+{
+    image out = load_image_stb_from_buff(buffer, len, c);
+
+    if((h && w) && (h != out.h || w != out.w)){
+        image resized = resize_image(out, w, h);
+        free_image(out);
+        out = resized;
+    }
+    return out;
+}
+
+image load_image_color_from_buff(unsigned char *buffer, int len, int w, int h )
+{
+    return load_image_from_buff(buffer, len, w, h, 3);
 }
 
 image load_image_color(char *filename, int w, int h)
