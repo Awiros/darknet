@@ -589,16 +589,16 @@ load_args get_base_args(network *net);
 
 void free_data(data d);
 
-typedef struct node{
+typedef struct element{
     void *val;
-    struct node *next;
-    struct node *prev;
-} node;
+    struct element *next;
+    struct element *prev;
+} element;
 
 typedef struct list{
     int size;
-    node *front;
-    node *back;
+    element *front;
+    element *back;
 } list;
 
 pthread_t load_data(load_args args);

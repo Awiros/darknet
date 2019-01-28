@@ -89,12 +89,12 @@ LAYER_TYPE string_to_layer_type(char * type)
 void free_section(section *s)
 {
     free(s->type);
-    node *n = s->options->front;
+    element *n = s->options->front;
     while(n){
         kvp *pair = (kvp *)n->val;
         free(pair->key);
         free(pair);
-        node *next = n->next;
+        element *next = n->next;
         free(n);
         n = next;
     }
@@ -742,7 +742,7 @@ int is_network(section *s)
 network *parse_network_cfg(char *filename)
 {
     list *sections = read_cfg(filename);
-    node *n = sections->front;
+    element *n = sections->front;
     if(!n) error("Config file has no sections");
     network *net = make_network(sections->size - 1);
     net->gpu_index = gpu_index;
