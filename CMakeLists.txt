@@ -74,10 +74,12 @@ set(EXEC_SRC ${PROJECT_SOURCE_DIR}/examples/captcha.c
             ${PROJECT_SOURCE_DIR}/examples/darknet.c)
 
 add_library(darknetlib STATIC ${LIB_SRC})
+set_target_properties(darknetlib PROPERTIES POSITION_INDEPENDENT_CODE ON)
+target_include_directories(darknetlib PUBLIC ${PROJECT_SOURCE_DIR}/include
+                                      PRIVATE ${OpenCV_INCLUDE_DIR})
 
-target_include_directories(darknetlib PUBLIC ${PROJECT_SOURCE_DIR}/include)
-#PRIVATE ${OpenCV_INCLUDE_DIR})
-
-target_link_libraries(darknetlib ${CMAKE_THREAD_LIBS_INIT})# ${OpenCV_LIBS})
+target_compile_definitions(darknetlib PUBLIC -DOPENCV) 
+target_link_libraries(darknetlib ${CMAKE_THREAD_LIBS_INIT} ${OpenCV_LIBS})
 add_executable(darknet ${EXEC_SRC})
 target_link_libraries(darknet darknetlib)
+

@@ -5,6 +5,7 @@
 #include <string.h>
 #include <pthread.h>
 
+
 #ifdef GPU
     #define BLOCK 512
 
@@ -758,6 +759,10 @@ void do_nms_sort(detection *dets, int total, int classes, float thresh);
 matrix make_matrix(int rows, int cols);
 
 #ifdef OPENCV
+
+//#include "opencv2/opencv.hpp"
+//using namespace cv;
+
 void *open_video_stream(const char *f, int c, int w, int h, int fps);
 image get_image_from_stream(void *p);
 void make_window(char *name, int w, int h, int fullscreen);
@@ -805,4 +810,10 @@ float rand_uniform(float min, float max);
 #ifdef __cplusplus
 }
 #endif
+
+/* Expand only when compiling with awiros engine */
+#ifdef ENABLE_AWIROS_DRIVERS
+  #include <darknet/awiros_drivers.h>
+#endif // ENABLE_AWIROS_DRIVERS
+
 #endif
